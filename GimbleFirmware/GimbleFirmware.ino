@@ -12,7 +12,7 @@ int AZ_Pos = 0;
 int EL_Pos = 0;
 int AZ_Target = 0;
 int EL_Target = 0;
-int stepTime = 5000;
+int stepTime = 1000;
 byte serialInput = 0;
 int minStepTime = 1000;
 int maxStepTime = 10000;
@@ -31,8 +31,24 @@ void setup() {
   pinMode(EL_STEP, OUTPUT); digitalWrite(EL_STEP, LOW);
 }
 
+unsigned long timerx = 0;
 
 void loop() {
+  while (1) {
+    if (millis() - timerx < 1500) {
+      AZ_Target = 200;
+      EL_Target = 200;
+    }
+    else if (millis() - timerx > 3000) {
+      delay(2000);
+      timerx = millis();
+    }
+    else {
+      AZ_Target = 0;
+      EL_Target = 0;
+    }
+    updateAZPos(); updateELPos();
+  }
   serialInput = Serial.read();
   if (serialInput == 'R' || serialInput == 'r') {
     digitalWrite(AZ_EN, HIGH); digitalWrite(EL_EN, HIGH);
